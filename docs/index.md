@@ -1,17 +1,11 @@
-# Welcome to MkDocs
+# Welcome to Doc Hub
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+This documentation hub helps developers centralize and search their markdown files using AI.  
+It supports automatic search, smart embeddings, and GitHub integration.  
+You can ask questions in natural language and get accurate results.
 
-## Commands
+## Features
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+- AI-powered semantic search
+- GitHub-integrated deployment
+- Smart update notifications for stale pages
