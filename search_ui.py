@@ -5,7 +5,7 @@ import streamlit as st
 from sentence_transformers import SentenceTransformer
 
 # Load model and data
-model = SentenceTransformer("nomic-ai/nomic-embed-text-v1", trust_remote_code=True)
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 with open("doc_metadata.pkl", "rb") as f:
     metadata = pickle.load(f)

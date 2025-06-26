@@ -33,7 +33,7 @@ def chunk_text(text, chunk_size=300):
 
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer("nomic-ai/nomic-embed-text-v1", trust_remote_code=True)
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 def get_embeddings(text_list):
     return model.encode(text_list, convert_to_numpy=True)
