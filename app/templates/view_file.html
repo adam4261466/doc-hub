@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Viewing: {{ filename }}</h2>
+<pre style="background:#eee; padding:1em;">{{ content }}</pre>
+<a href="{{ url_for('main.home') }}">🔙 Back</a>
+{% endblock %}

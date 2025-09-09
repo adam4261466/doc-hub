@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Authentication</h2>
+
+<!-- Tabs for switching forms -->
+<div>
+    <button onclick="showForm('login')">Login</button>
+    <button onclick="showForm('register')">Register</button>
+</div>
+
+<!-- Login Form -->
+<div id="login-form">
+    <form method="POST" action="{{ url_for('main.login') }}">
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<!-- Register Form -->
+<div id="register-form" style="display:none;">
+    <form method="POST" action="{{ url_for('main.register') }}">
+        <input name="username" placeholder="Username" required>
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+
+<script>
+function showForm(form) {
+    if(form === 'login') {
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+    } else {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'block';
+    }
+}
+</script>
+
+<script>
+let activeTab = "{{ active_tab }}";
+showForm(activeTab);
+</script>
+
+{% endblock %}
