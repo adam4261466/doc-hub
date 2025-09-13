@@ -39,7 +39,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # Ensure uploads are stored in a non-executable directory outside static/
-    app.config['UPLOAD_FOLDER'] = "uploads"
+    app.config['UPLOAD_FOLDER'] = "data/uploads"
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 
     # Secure cookie flags
