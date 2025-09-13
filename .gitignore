@@ -7,8 +7,6 @@ __pycache__/
 # Virtual environment
 venv/
 
-# Environment variables
-#.env
 
 # Data / uploads
 data/
