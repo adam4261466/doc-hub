@@ -3,8 +3,7 @@ import numpy as np
 import os
 import json
 from pathlib import Path
-from .models import Chunk
-from .embeddings import EmbeddingGenerator
+
 
 class FaissIndex:
     def __init__(self, dim, user_id, path="data/faiss"):
@@ -85,15 +84,18 @@ class FaissIndex:
                     self.metadata.append({})
                 self.metadata[chunk_id] = metadata
         
-        # Save index and metadata
-        faiss.write_index(self.index, self.index_path)
+        # Save index and metadata safely
+        self.save_index_safely()
 
         # Save index path in IndexMeta
-        from .models import IndexMeta, db
-        index_meta = IndexMeta(user_id=self.user_id, index_path=self.index_path)
-        db.session.add(index_meta)
-        db.session.commit()
-        self._save_metadata()
+        try:
+            from .models import IndexMeta, db
+            index_meta = IndexMeta(user_id=self.user_id, index_path=self.index_path)
+            db.session.add(index_meta)
+            db.session.commit()
+        except ImportError:
+            # Skip database save if models not available (e.g., in test)
+            pass
         
         return chunk_ids
 
@@ -160,8 +162,7 @@ class FaissIndex:
             print(f"DEBUG: Index size before removal: {size_before}, after: {size_after}")
             if 0 <= chunk_id < len(self.metadata):
                 self.metadata[chunk_id] = {}
-            faiss.write_index(self.index, self.index_path)
-            self._save_metadata()
+            self.save_index_safely()
             print(f"DEBUG: Successfully removed chunk_id={chunk_id} from FAISS index")
         except Exception as e:
             print(f"Error removing ID {chunk_id} from FAISS index: {e}")
@@ -171,6 +172,9 @@ class FaissIndex:
         Rebuild the FAISS index from all remaining chunks for this user.
         This removes any orphaned embeddings from deleted chunks.
         """
+        from .models import Chunk
+        from .embeddings import EmbeddingGenerator
+
         try:
             print(f"DEBUG: Rebuilding FAISS index for user {self.user_id}")
 
@@ -183,8 +187,7 @@ class FaissIndex:
                 quantizer = faiss.IndexFlatL2(self.dim)
                 self.index = faiss.IndexIDMap2(quantizer)
                 self.metadata = []
-                faiss.write_index(self.index, self.index_path)
-                self._save_metadata()
+                self.save_index_safely()
                 print(f"DEBUG: Created empty FAISS index for user {self.user_id}")
                 return
 
@@ -232,15 +235,47 @@ class FaissIndex:
             self.index = new_index
             self.metadata = new_metadata
 
-            # Save the new index and metadata
-            faiss.write_index(self.index, self.index_path)
-            self._save_metadata()
+            # Save the new index and metadata safely
+            self.save_index_safely()
 
             print(f"DEBUG: Successfully rebuilt FAISS index for user {self.user_id} with {len(chunks)} chunks")
 
         except Exception as e:
             print(f"Error rebuilding FAISS index for user {self.user_id}: {e}")
             raise
+
+    def save_index_safely(self):
+        """
+        Save the index and metadata safely using atomic swap.
+        """
+        import shutil
+
+        tmp_index_path = os.path.join(os.path.dirname(self.index_path), "tmp.index")
+        tmp_metadata_path = os.path.join(os.path.dirname(self.metadata_path), "tmp_metadata.json")
+
+        # Step 1: Save index and metadata to temporary files
+        faiss.write_index(self.index, tmp_index_path)
+        with open(tmp_metadata_path, 'w') as f:
+            json.dump(self.metadata, f)
+
+        # Step 2: Verify index loads correctly
+        try:
+            test_index = faiss.read_index(tmp_index_path)
+            if test_index.ntotal != self.index.ntotal:
+                raise ValueError("Index size mismatch after save")
+        except Exception as e:
+            print("❌ Index verification failed:", e)
+            # Clean up temp files
+            if os.path.exists(tmp_index_path):
+                os.remove(tmp_index_path)
+            if os.path.exists(tmp_metadata_path):
+                os.remove(tmp_metadata_path)
+            raise e
+
+        # Step 3: Atomically swap tmp files with live files
+        shutil.move(tmp_index_path, self.index_path)
+        shutil.move(tmp_metadata_path, self.metadata_path)
+        print("✅ Index swapped safely.")
 
 
 # Test function

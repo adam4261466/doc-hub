@@ -327,6 +327,7 @@ def view_file(filepath: str):
 import time
 
 @main.route("/query", methods=["POST"])
+@limiter.limit("2 per minute")
 @login_required
 def query_documents():
     from .document_processor import search_similar_chunks
