@@ -15,7 +15,7 @@ migrate = Migrate()
 login_manager = LoginManager()
 
 # Limiter: tracks per IP by default, sets default request limits
-limiter = Limiter(key_func=get_remote_address, default_limits=["200 per day", "50 per hour"])
+limiter = Limiter(key_func=get_remote_address, default_limits=["60 per minute"])
 
 from .models import User
 
