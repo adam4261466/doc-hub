@@ -7,16 +7,42 @@ from .faiss_index import FaissIndex
 
 # Function to extract raw text from uploaded file
 def extract_text(file_path):
+    """
+    Extracts text content from .pdf, .txt, or .md files.
+    Handles encoding errors and empty pages gracefully.
+    """
     text = ""
-    if file_path.endswith(".pdf"):
-        reader = PdfReader(file_path)
-        for page in reader.pages:
-            text += page.extract_text() or ""
-    elif file_path.endswith(".txt"):
-        with open(file_path, "r", encoding="utf-8") as f:
-            text = f.read()
+    ext = os.path.splitext(file_path)[1].lower()
+
+    if ext == ".pdf":
+        try:
+            reader = PdfReader(file_path)
+            for page in reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+        except Exception as e:
+            print(f"[ERROR] Could not read PDF: {e}")
+            text = "Error reading PDF content."
+
+    elif ext in (".txt", ".md"):
+        try:
+            # Try UTF-8 first, fallback to latin-1
+            with open(file_path, "r", encoding="utf-8") as f:
+                text = f.read()
+        except UnicodeDecodeError:
+            with open(file_path, "r", encoding="latin-1") as f:
+                text = f.read()
+        except Exception as e:
+            print(f"[ERROR] Could not read text file: {e}")
+            text = "Error reading text file content."
+
     else:
-        raise ValueError("Unsupported file format")
+        raise ValueError(f"Unsupported file format: {ext}")
+
+    if not text.strip():
+        text = "No readable text found in the document."
+
     return text
 
 # Function to split text into chunks

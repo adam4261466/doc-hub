@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>User Stats: {{ user.username }}</h2>
+<p><a href="{{ url_for('main.admin') }}" class="btn btn-secondary">Back to Admin</a></p>
+<ul>
+  <li><strong>ID:</strong> {{ user.id }}</li>
+  <li><strong>Username:</strong> {{ user.username }}</li>
+  <li><strong>Email:</strong> {{ user.email }}</li>
+  <li><strong>Created At:</strong> {{ user.created_at.strftime("%Y-%m-%d %H:%M") }}</li>
+  <li><strong>Pilot Status:</strong> {{ 'Yes' if user.is_pilot else 'No' }}</li>
+  <li><strong>Pilot Purchased At:</strong> {{ user.pilot_purchased_at.strftime("%Y-%m-%d %H:%M") if user.pilot_purchased_at else "N/A" }}</li>
+  <li><strong>Files Count:</strong> {{ file_count }}</li>
+  <li><strong>Storage Used:</strong> {{ "%.2f"|format(used_mb) }} MB</li>
+  <li><strong>Storage Available:</strong> {{ "%.2f"|format(available_mb) }} MB</li>
+</ul>
+{% endblock %}

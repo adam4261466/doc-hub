@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Pilot Customers</h2>
+<p><a href="{{ url_for('main.system_stats') }}" class="btn btn-info">System Stats</a></p>
+<table class="table">
+  <tr>
+    <th>ID</th>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Joined Pilot</th>
+    <th>Files</th>
+    <th>Actions</th>
+  </tr>
+  {% for user in users %}
+  <tr>
+    <td>{{ user.id }}</td>
+    <td>{{ user.username }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.pilot_purchased_at.strftime("%Y-%m-%d") if user.pilot_purchased_at else "N/A" }}</td>
+    <td>{{ user.files|length }}</td>
+    <td>
+      <a href="{{ url_for('main.user_stats', user_id=user.id) }}" class="btn btn-info btn-sm">Stats</a>
+      <form action="{{ url_for('main.toggle_pilot', user_id=user.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-secondary btn-sm">{{ 'Remove Pilot' if user.is_pilot else 'Grant Pilot' }}</button>
+      </form>
+      <form action="{{ url_for('main.impersonate', user_id=user.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-primary btn-sm">Impersonate</button>
+      </form>
+      <form action="{{ url_for('main.reset_index', user_id=user.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-warning btn-sm">Reset Index</button>
+      </form>
+      <form action="{{ url_for('main.delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user and all their data?')">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -9,7 +9,10 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    
+    is_pilot = db.Column(db.Boolean, default=False, nullable=True)  # Track if user has paid for Pilot
+    pilot_purchased_at = db.Column(db.DateTime, nullable=True)  # When they purchased Pilot
+    is_admin = db.Column(db.Boolean, default=False, nullable=False) # Admin flag added
+
     # Relationship to files
     files = db.relationship('File', backref='user', lazy=True)
     

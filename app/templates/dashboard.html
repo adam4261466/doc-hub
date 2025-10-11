@@ -73,6 +73,60 @@
 
         <!-- Sidebar -->
         <div class="col-lg-4 col-md-5">
+            <!-- Pilot Status Section -->
+            {% if user.is_pilot %}
+            <div class="card mb-4 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-star"></i> DocHub Pilot Member</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="card-title text-success">Welcome to DocHub Pilot!</h6>
+                    <p class="card-text text-muted">You have access to all premium features</p>
+                    <div class="alert alert-success" role="alert">
+                        <small>
+                            <strong>Member since:</strong><br>
+                            {{ user.pilot_purchased_at.strftime('%B %d, %Y') if user.pilot_purchased_at else 'Recently' }}
+                        </small>
+                    </div>
+                    <div class="text-left">
+                        <h6>Your Premium Benefits:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Unlimited file uploads</li>
+                            <li><i class="fas fa-check text-success"></i> Advanced AI processing</li>
+                            <li><i class="fas fa-check text-success"></i> Priority support</li>
+                            <li><i class="fas fa-check text-success"></i> Export capabilities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-credit-card"></i> Upgrade to DocHub Pilot</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h6 class="card-title">Unlock Premium Features</h6>
+                    <p class="card-text text-muted">Get unlimited document processing and advanced AI features for $150</p>
+                    <ul class="list-unstyled text-left mb-3">
+                        <li><i class="fas fa-check text-success"></i> Unlimited file uploads</li>
+                        <li><i class="fas fa-check text-success"></i> Advanced AI processing</li>
+                        <li><i class="fas fa-check text-success"></i> Priority support</li>
+                        <li><i class="fas fa-check text-success"></i> Export capabilities</li>
+                    </ul>
+                    <form action="{{ url_for('main.create_checkout_session') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-rocket"></i> Upgrade to Pilot - $150
+                        </button>
+                    </form>
+                    <small class="text-muted d-block mt-2">Secure payment powered by Stripe</small>
+                </div>
+            </div>
+            {% endif %}
+
             <!-- User Files -->
             <div class="card">
                 <div class="card-header">
