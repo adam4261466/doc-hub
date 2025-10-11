@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h1 class="card-title text-success mb-4">Payment Successful!</h1>
+                    <p class="card-text lead mb-4">
+                        Thank you for upgrading to <strong>DocHub Pilot</strong>!
+                        Your payment of $150 has been processed successfully.
+                    </p>
+                    <div class="alert alert-success" role="alert">
+                        <h5 class="alert-heading">🎉 Welcome to DocHub Pilot!</h5>
+                        <p class="mb-0">
+                            You now have access to unlimited document processing, advanced AI features,
+                            and priority support. Start exploring your enhanced capabilities!
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                        </a>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            Payment ID: {{ session_id or 'N/A' }}<br>
+                            Questions? Contact our support team.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

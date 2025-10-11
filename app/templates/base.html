@@ -18,9 +18,20 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-                        </li>
+                        {% if session.get('admin_id') %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-warning" href="{{ url_for('main.return_to_admin') }}">Return to Admin</a>
+                            </li>
+                        {% endif %}
+                        {% if current_user.is_pilot %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('main.pricing') }}">Pricing</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
                         </li>

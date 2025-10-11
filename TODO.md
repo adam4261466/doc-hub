@@ -1,0 +1,2 @@
+- [x] Modify extract_text in app/document_processor.py to handle .md files and catch UnicodeDecodeError for text files (.txt, .md)
+- [ ] Test the dashboard to ensure it displays error message for binary files instead of crashing

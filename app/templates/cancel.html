@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-times-circle text-warning" style="font-size: 4rem;"></i>
+                    </div>
+                    <h1 class="card-title text-warning mb-4">Payment Cancelled</h1>
+                    <p class="card-text lead mb-4">
+                        Your payment was cancelled. No charges were made to your account.
+                    </p>
+                    <div class="alert alert-info" role="alert">
+                        <h5 class="alert-heading">💡 No worries!</h5>
+                        <p class="mb-0">
+                            You can try upgrading to DocHub Pilot again anytime.
+                            All your current features remain available.
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-success btn-lg ml-2">
+                            <i class="fas fa-credit-card"></i> Try Again
+                        </a>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            Need help? Our support team is here to assist you.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
