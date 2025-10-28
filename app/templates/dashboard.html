@@ -1,70 +1,166 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Main Content -->
-        <div class="col-lg-8 col-md-7">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Welcome, {{ user.username }}!</h4>
-                </div>
-                <div class="card-body">
-                    <!-- Query Form -->
-                    <div class="mb-4">
-                        <h5>Ask Questions About Your Documents</h5>
-                        <!-- Removed unwanted token text here -->
-                        <form id="queryForm" action="{{ url_for('main.query_documents') }}" method="post">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <div class="input-group">
-                                <input type="text" name="query" class="form-control"
-                                       placeholder="Ask a question about your documents..." required>
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary">
-                                        <span id="searchIcon">🔍</span>
-                                        <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
-                                        Search
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+<div class="container-fluid py-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card glow-primary">
+                <div class="card-body py-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-2"><i class="fas fa-user-circle me-3 text-primary"></i>Welcome back, {{ user.username }}!</h2>
+                            <p class="mb-0 text-muted">Ready to explore your documents with AI-powered insights.</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            {% if user.is_pilot %}
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    <i class="fas fa-star me-2"></i>Premium Member
+                                </span>
+                            {% else %}
+                                <span class="badge bg-outline-primary fs-6 px-3 py-2">
+                                    <i class="fas fa-user me-2"></i>Free Plan
+                                </span>
+                            {% endif %}
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <!-- Drag and Drop Upload -->
-                    <div class="mb-4">
-                        <h5>Upload New Document</h5>
-                        <div id="dropZone" class="drop-zone border border-dashed rounded p-4 text-center">
-                            <div class="drop-content">
-                                <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
-                                <p>Drag & drop files here or click to browse</p>
-                                <small class="text-muted">Supports .txt and .md files</small>
+    <div class="row g-4">
+        <!-- Main Content Area -->
+        <div class="col-lg-8">
+            <!-- Quick Actions Row -->
+            <div class="row g-3 mb-4">
+                <!-- AI Query Card -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-brain fa-3x text-primary"></i>
                             </div>
-                            <input type="file" id="fileInput" name="file" class="d-none" accept=".txt,.md">
+                            <h5 class="card-title">Ask AI Questions</h5>
+                            <p class="card-text text-muted">Get intelligent answers from your documents</p>
+                            <button class="btn btn-primary w-100" data-bs-toggle="collapse" data-bs-target="#querySection">
+                                <i class="fas fa-search me-2"></i>Start Querying
+                            </button>
                         </div>
-                        <div id="uploadProgress" class="progress mt-2 d-none">
-                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Upload Card -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Upload Documents</h5>
+                            <p class="card-text text-muted">Add new files to your knowledge base</p>
+                            <button class="btn btn-success w-100" data-bs-toggle="collapse" data-bs-target="#uploadSection">
+                                <i class="fas fa-plus me-2"></i>Upload File
+                            </button>
                         </div>
-                        <div id="uploadError" class="text-danger mt-2 d-none"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Query History -->
-            <div class="card mb-4">
+            <!-- Collapsible Query Section -->
+            <div class="collapse mb-4" id="querySection">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-search me-2"></i>Ask Questions About Your Documents</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="queryForm" action="{{ url_for('main.query_documents') }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="input-group input-group-lg">
+                                <input type="text" name="query" class="form-control"
+                                       placeholder="Example: What are the main topics discussed in my documents?" required>
+                                <button type="submit" class="btn btn-primary">
+                                    <span id="searchIcon"><i class="fas fa-search me-2"></i></span>
+                                    <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                    Search
+                                </button>
+                            </div>
+                            <small class="text-muted mt-2 d-block">💡 Try questions like "Summarize the key points" or "What are the main conclusions?"</small>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Collapsible Upload Section -->
+            <div class="collapse mb-4" id="uploadSection">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-cloud-upload-alt me-2"></i>Upload New Document</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="dropZone" class="drop-zone p-4 text-center">
+                            <div class="drop-content">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-primary"></i>
+                                <h5>Drag & drop files here</h5>
+                                <p class="text-muted mb-3">or <button class="btn btn-link p-0 text-primary" onclick="document.getElementById('fileInput').click()">browse your computer</button></p>
+                                <div class="row text-start">
+                                    <div class="col-md-6">
+                                        <small class="text-muted">
+                                            <i class="fas fa-check text-success me-1"></i>Supports .txt and .md files<br>
+                                            <i class="fas fa-check text-success me-1"></i>Up to 10MB per file
+                                        </small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle text-info me-1"></i>Files are processed securely<br>
+                                            <i class="fas fa-lock text-warning me-1"></i>Enterprise-grade encryption
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="file" id="fileInput" name="file" class="d-none" accept=".txt,.md">
+                        </div>
+                        <div id="uploadProgress" class="progress mt-3 d-none">
+                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div id="uploadError" class="alert alert-danger mt-3 d-none"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Recent Queries</h5>
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h5>
                 </div>
                 <div class="card-body">
                     <div id="queryHistory">
                         {% if query_history %}
-                            {% for query in query_history %}
-                                <div class="query-item border-bottom pb-2 mb-2">
-                                    <strong>Q:</strong> {{ query.query }}<br>
-                                    <small class="text-muted">{{ query.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
-                                </div>
-                            {% endfor %}
+                            <div class="timeline">
+                                {% for query in query_history %}
+                                    <div class="timeline-item mb-3 pb-3 border-bottom">
+                                        <div class="d-flex">
+                                            <div class="timeline-marker bg-primary me-3">
+                                                <i class="fas fa-search text-white"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                                    <strong class="text-primary">Query:</strong>
+                                                    <small class="text-muted">{{ query.timestamp.strftime('%m/%d %H:%M') }}</small>
+                                                </div>
+                                                <p class="mb-0">{{ query.query }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% else %}
-                            <p class="text-muted">No queries yet. Ask a question to get started!</p>
+                            <div class="text-center py-5">
+                                <span class="display-4 mb-3"></span>
+                                <i class="fas fa-inbox fa-2x text-muted mb-3"></i>
+                                <h6 class="text-muted">No activity yet</h6>
+                                <p class="text-muted mb-0">Start by uploading a document or asking a question!</p>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
@@ -72,100 +168,144 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="col-lg-4 col-md-5">
-            <!-- Pilot Status Section -->
+        <div class="col-lg-4">
+            <!-- Account Status -->
             {% if user.is_pilot %}
-            <div class="card mb-4 border-success">
+            <div class="card mb-4 border-success glow-success">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-star"></i> DocHub Pilot Member</h5>
+                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>DocHub Pilot Member</h5>
                 </div>
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-crown fa-3x text-warning mb-2"></i>
+                        <h6 class="text-success">Premium Access Unlocked!</h6>
                     </div>
-                    <h6 class="card-title text-success">Welcome to DocHub Pilot!</h6>
-                    <p class="card-text text-muted">You have access to all premium features</p>
-                    <div class="alert alert-success" role="alert">
-                        <small>
-                            <strong>Member since:</strong><br>
-                            {{ user.pilot_purchased_at.strftime('%B %d, %Y') if user.pilot_purchased_at else 'Recently' }}
-                        </small>
+                    <div class="alert alert-success py-2">
+                        <small><strong>Member since:</strong> {{ user.pilot_purchased_at.strftime('%B %d, %Y') if user.pilot_purchased_at else 'Recently' }}</small>
                     </div>
-                    <div class="text-left">
-                        <h6>Your Premium Benefits:</h6>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success"></i> Unlimited file uploads</li>
-                            <li><i class="fas fa-check text-success"></i> Advanced AI processing</li>
-                            <li><i class="fas fa-check text-success"></i> Priority support</li>
-                            <li><i class="fas fa-check text-success"></i> Export capabilities</li>
-                        </ul>
+                    <div class="premium-benefits">
+                        <h6 class="mb-2">🎁 Your Benefits:</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-check text-success me-1"></i>Unlimited uploads
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-check text-success me-1"></i>Advanced AI
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-check text-success me-1"></i>Priority support
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-check text-success me-1"></i>Export features
+                                </small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             {% else %}
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-credit-card"></i> Upgrade to DocHub Pilot</h5>
+            <div class="card mb-4 border-warning">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="fas fa-rocket me-2"></i>🚀 Upgrade to Premium</h5>
                 </div>
-                <div class="card-body text-center">
-                    <h6 class="card-title">Unlock Premium Features</h6>
-                    <p class="card-text text-muted">Get unlimited document processing and advanced AI features for $150</p>
-                    <ul class="list-unstyled text-left mb-3">
-                        <li><i class="fas fa-check text-success"></i> Unlimited file uploads</li>
-                        <li><i class="fas fa-check text-success"></i> Advanced AI processing</li>
-                        <li><i class="fas fa-check text-success"></i> Priority support</li>
-                        <li><i class="fas fa-check text-success"></i> Export capabilities</li>
-                    </ul>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <span class="badge bg-primary fs-5 px-3 py-2 mb-2">$150</span>
+                        <p class="text-muted small">One-time payment, lifetime access</p>
+                    </div>
+                    <div class="upgrade-benefits mb-3">
+                        <h6 class="mb-2">✨ Unlock Premium Features:</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-plus text-primary me-1"></i>Unlimited uploads
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-plus text-primary me-1"></i>Advanced AI
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-plus text-primary me-1"></i>Priority support
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <small class="d-block">
+                                    <i class="fas fa-plus text-primary me-1"></i>Export features
+                                </small>
+                            </div>
+                        </div>
+                    </div>
                     <form action="{{ url_for('main.create_checkout_session') }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="btn btn-success btn-lg">
-                            <i class="fas fa-rocket"></i> Upgrade to Pilot - $150
+                        <button type="submit" class="btn btn-warning btn-lg w-100">
+                            <i class="fas fa-credit-card me-2"></i>💳 Upgrade Now
                         </button>
                     </form>
-                    <small class="text-muted d-block mt-2">Secure payment powered by Stripe</small>
+                    <small class="text-muted d-block mt-2 text-center">Secure payment powered by Stripe</small>
                 </div>
             </div>
             {% endif %}
 
-            <!-- User Files -->
+            <!-- Document Library -->
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Your Files</h5>
+                    <h5 class="mb-0"><i class="fas fa-folder me-2"></i>Your Documents</h5>
+                    <small class="text-muted">({{ files|length }} files)</small>
                 </div>
                 <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                     {% if files %}
-                        <div class="list-group" style="overflow-x: auto; white-space: nowrap;">
+                        <div class="document-list">
                             {% for file in files %}
-                                <div class="list-group-item" style="overflow: hidden; padding: 10px; display: inline-block; vertical-align: top; white-space: normal; min-width: 300px;">
-                                    <div class="d-flex justify-content-between align-items-center" style="flex-wrap: wrap;">
-                                        <div style="flex: 1 1 auto; min-width: 150px;">
-                                            <strong>{{ file.filename }}</strong>
-                                            <br>
-                                            <small class="text-muted">{{ (file.size / 1024)|round(2) }} KB</small>
-                                            <br>
-                                            <small class="text-muted">Chunks: {{ file.chunks|length }}</small>
+                                <div class="document-item p-3 mb-2 rounded">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1 me-2">
+                                            <div class="d-flex align-items-center mb-1">
+                                                <i class="fas fa-file-alt text-primary me-2"></i>
+                                                <strong class="d-block text-truncate" title="{{ file.filename }}">{{ file.filename }}</strong>
+                                            </div>
+                                            <small class="text-muted d-block">
+                                                {{ (file.size / 1024)|round(2) }} KB • {{ file.chunks|length }} chunks
+                                                {% if file.processed %}
+                                                    <span class="badge bg-success ms-1">Processed</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning ms-1">Processing</span>
+                                                {% endif %}
+                                            </small>
                                         </div>
-                                        <div class="btn-group btn-group-sm" style="flex-shrink: 0; white-space: nowrap;">
-                                            <button class="btn btn-outline-info preview-btn"
+                                        <div class="btn-group-vertical btn-group-sm">
+                                            <button class="btn btn-outline-info btn-sm preview-btn mb-1"
                                                     data-filename="{{ file.filename }}"
-                                                    data-content="{{ file.content|default('No content available') }}">
-                                                Preview
+                                                    data-content="{{ file.content|default('No content available') }}"
+                                                    title="Preview">
+                                                <i class="fas fa-eye"></i>
                                             </button>
                                             {% if not file.processed %}
                                             <form action="{{ url_for('main.process_file_route', file_id=file.id) }}" method="post" class="d-inline">
                                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                                <button type="submit" class="btn btn-outline-primary">Process</button>
+                                                <button type="submit" class="btn btn-outline-primary btn-sm mb-1" title="Process">
+                                                    <i class="fas fa-cog"></i>
+                                                </button>
                                             </form>
                                             {% else %}
-                                            <button class="btn btn-outline-success" disabled>
-                                                <i class="fas fa-check"></i> Processed
+                                            <button class="btn btn-outline-success btn-sm mb-1" disabled title="Processed">
+                                                <i class="fas fa-check"></i>
                                             </button>
                                             {% endif %}
                                             <form action="{{ url_for('main.delete_file', file_id=file.id) }}" method="post" class="d-inline">
                                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                                <button type="submit" class="btn btn-outline-danger"
-                                                        onclick="return confirm('Are you sure you want to delete this file?')">
-                                                    Delete
+                                                <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                        onclick="return confirm('Are you sure you want to delete this file?')" title="Delete">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -174,7 +314,12 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <p class="text-muted">No files uploaded yet.</p>
+                        <div class="text-center py-4">
+                            <span class="display-4 mb-3"></span>
+                            <i class="fas fa-file-alt fa-2x text-muted mb-3"></i>
+                            <h6 class="text-muted">No documents yet</h6>
+                            <p class="text-muted mb-0 small">Upload your first document to get started with AI queries!</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -183,20 +328,18 @@
 </div>
 
 <!-- File Preview Modal -->
-<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="previewModalLabel">File Preview</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <pre id="previewContent" class="bg-light p-3 rounded" style="white-space: pre-wrap; max-height: 400px; overflow-y: auto;"></pre>
+                <pre id="previewContent" class="p-3 rounded" style="white-space: pre-wrap; max-height: 400px; overflow-y: auto; background-color: #161b22; color: #ffffff; border: 1px solid #30363d;"></pre>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -374,11 +517,12 @@ document.querySelectorAll('.preview-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const filename = btn.dataset.filename;
         const content = btn.dataset.content;
-        
+
         document.getElementById('previewModalLabel').textContent = `Preview: ${filename}`;
         document.getElementById('previewContent').textContent = content;
-        
-        $('#previewModal').modal('show');
+
+        const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+        modal.show();
     });
 });
 </script>
@@ -420,6 +564,38 @@ document.querySelectorAll('.preview-btn').forEach(btn => {
 
 .list-group-item:hover {
     background-color: #f8f9fa;
+}
+
+/* New dashboard styles */
+.timeline-marker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.document-item {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.document-item:hover {
+    background-color: #e9ecef;
+    border-color: #007bff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.premium-benefits .row > div {
+    padding: 2px 0;
+}
+
+.upgrade-benefits .row > div {
+    padding: 2px 0;
 }
 </style>
 {% endblock %}

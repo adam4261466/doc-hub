@@ -3,62 +3,153 @@
 {% block title %}Pricing - DocHub{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">DocHub Pilot Program</h2>
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold mb-3">Choose Your Plan</h1>
+                <p class="lead">Unlock the full potential of AI-powered document management </p>
             </div>
-            <div class="card-body">
-                {% if current_user.is_authenticated %}
-                    {% if current_user.is_pilot %}
-                        <div class="alert alert-success">
-                            <h4 class="alert-heading">Welcome, Pilot!</h4>
-                            <p>You are already enrolled in the DocHub Pilot program. You have access to all premium features including:</p>
-                            <ul>
-                                <li>Upload up to 200 documents</li>
-                                <li>1GB storage space</li>
-                                <li>AI-powered document querying</li>
-                                <li>Advanced file processing</li>
-                            </ul>
-                            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
-                        </div>
-                    {% else %}
-                        <h3 class="card-title">Upgrade to Pilot</h3>
-                        <p class="lead">Get started with DocHub Pilot - no free tier available. Unlock the full power with our Pilot program for $150 (one-time payment, lifetime access).</p>
 
-                        <div class="row">
-                            <div class="col-md-8 mx-auto">
-                                <h4>Pilot Plan - $150</h4>
-                                <ul>
-                                    <li>Upload up to 200 documents</li>
-                                    <li>1GB storage space</li>
-                                    <li>AI-powered document querying</li>
-                                    <li>Advanced file processing</li>
-                                    <li>Priority support</li>
-                                </ul>
+            {% if current_user.is_authenticated %}
+                {% if current_user.is_pilot %}
+                    <!-- Current Pilot Member -->
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card border-success glow-success">
+                                <div class="card-header bg-success text-center">
+                                    <i class="fas fa-star fa-3x text-white mb-3"></i>
+                                    <h3 class="text-white mb-0">DocHub Pilot Member</h3>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h4 class="text-success mb-4">Welcome back, Pilot!</h4>
+                                    <p class="mb-4">You have lifetime access to all premium features:</p>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                <span>Upload up to 200 documents</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                <span>1GB storage space</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                <span>AI-powered querying</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                <span>Priority support</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="{{ url_for('main.dashboard') }}" class="btn btn-success btn-lg">
+                                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                                    </a>
+                                </div>
                             </div>
                         </div>
-
-                        <hr>
-
-                        <form action="{{ url_for('main.create_checkout_session') }}" method="POST">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-credit-card"></i> Upgrade to Pilot - $150
-                            </button>
-                        </form>
-
-                        <p class="mt-3 text-muted">Secure payment powered by Stripe. One-time payment, lifetime access.</p>
-                    {% endif %}
+                    </div>
                 {% else %}
-                    <div class="alert alert-info">
-                        <h4 class="alert-heading">Sign Up to Get Started</h4>
-                        <p>Please register or login to access DocHub's features.</p>
-                        <a href="{{ url_for('main.register') }}" class="btn btn-primary mr-2">Register</a>
-                        <a href="{{ url_for('main.login') }}" class="btn btn-secondary">Login</a>
+                    <!-- Upgrade to Pilot -->
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="card glow-primary">
+                                <div class="card-header text-center">
+                                    <i class="fas fa-rocket fa-4x text-primary mb-3"></i>
+                                    <h2 class="mb-0">DocHub Pilot</h2>
+                                    <div class="mt-3">
+                                        <span class="badge bg-primary fs-4">$150</span>
+                                        <small class="text-muted d-block">One-time payment, lifetime access</small>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="lead text-center mb-4">Unlock unlimited document processing and advanced AI features</p>
+
+                                    <div class="mb-4">
+                                        <h5 class="text-center mb-3">Everything you get:</h5>
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                    <span>Upload up to 200 documents</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                    <span>1GB secure storage space</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                    <span>AI-powered document querying</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                    <span>Advanced file processing</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                    <span>Priority customer support</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                                    <span>Lifetime access, no recurring fees</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <form action="{{ url_for('main.create_checkout_session') }}" method="POST">
+                                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                                <i class="fas fa-credit-card me-2"></i>Upgrade to Pilot - $150
+                                            </button>
+                                        </form>
+                                        <small class="text-muted d-block mt-2">Secure payment powered by Stripe</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {% endif %}
-            </div>
+            {% else %}
+                <!-- Not Authenticated -->
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card glow-primary">
+                            <div class="card-body text-center py-5">
+                                <i class="fas fa-sign-in-alt fa-4x text-primary mb-4"></i>
+                                <h3 class="mb-3">Sign In to View Pricing</h3>
+                                <p class="lead mb-4">Create an account or sign in to explore DocHub's premium features and pricing options.</p>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-user-plus me-2"></i>Get Started
+                                    </a>
+                                    <a href="{{ url_for('main.login') }}" class="btn btn-outline-primary btn-lg">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

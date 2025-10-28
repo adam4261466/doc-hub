@@ -1,5 +1,82 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Welcome {{ user.username if user.is_authenticated else 'Guest' }}!</h1>
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <!-- Hero Section -->
+            <div class="card mb-5 glow-primary">
+                <div class="card-body py-5">
+                    <i class="fas fa-file-alt fa-5x text-primary mb-4"></i>
+                    <h1 class="display-4 fw-bold mb-3">Welcome to DocHub</h1>
+                    <p class="lead mb-4">Transform your document workflow with AI-powered insights and intelligent search capabilities. </p>
+                    {% if user.is_authenticated %}
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{{ url_for('main.logout') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-user-plus me-2"></i>Get Started
+                        </a>
+                        <a href="{{ url_for('main.login') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-brain fa-2x text-primary mb-3"></i>
+                            <h5 class="card-title">AI-Powered Search</h5>
+                            <p class="card-text">Ask questions about your documents and get intelligent answers powered by advanced AI. </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-success mb-3"></i>
+                            <h5 class="card-title">Easy Upload</h5>
+                            <p class="card-text">Drag and drop your documents or browse to upload. Supports multiple formats. </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt fa-2x text-warning mb-3"></i>
+                            <h5 class="card-title">Secure & Private</h5>
+                            <p class="card-text">Your documents are processed securely with enterprise-grade encryption. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            {% if not user.is_authenticated %}
+            <div class="card bg-success">
+                <div class="card-body py-4">
+                    <h3 class="text-white mb-3">Ready to unlock the power of AI for your documents? </h3>
+                    <p class="text-white-50 mb-0">Join thousands of users who are already transforming their document workflows. </p>
+                    <div class="mt-3">
+                        <a href="{{ url_for('main.pricing') }}" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-crown me-2"></i>View Pricing
+                        </a>
+                        <a href="{{ url_for('main.register') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-rocket me-2"></i>Start Free Trial
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
