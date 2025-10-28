@@ -2,46 +2,65 @@ import os
 import faiss
 from .models import db, Chunk, File
 from PyPDF2 import PdfReader
+from docx import Document
+from pptx import Presentation
+import pandas as pd
+from bs4 import BeautifulSoup
+import json
 from .embeddings import EmbeddingGenerator
 from .faiss_index import FaissIndex
 
 # Function to extract raw text from uploaded file
 def extract_text(file_path):
     """
-    Extracts text content from .pdf, .txt, or .md files.
+    Extracts text content from various file formats.
     Handles encoding errors and empty pages gracefully.
     """
     text = ""
     ext = os.path.splitext(file_path)[1].lower()
 
-    if ext == ".pdf":
-        try:
+    try:
+        if ext == ".pdf":
             reader = PdfReader(file_path)
             for page in reader.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text += page_text + "\n"
-        except Exception as e:
-            print(f"[ERROR] Could not read PDF: {e}")
-            text = "Error reading PDF content."
+                text += page.extract_text() or ""
 
-    elif ext in (".txt", ".md"):
-        try:
-            # Try UTF-8 first, fallback to latin-1
+        elif ext in [".txt", ".md"]:
             with open(file_path, "r", encoding="utf-8") as f:
                 text = f.read()
-        except UnicodeDecodeError:
-            with open(file_path, "r", encoding="latin-1") as f:
-                text = f.read()
-        except Exception as e:
-            print(f"[ERROR] Could not read text file: {e}")
-            text = "Error reading text file content."
 
-    else:
-        raise ValueError(f"Unsupported file format: {ext}")
+        elif ext == ".docx":
+            doc = Document(file_path)
+            text = "\n".join([p.text for p in doc.paragraphs])
 
-    if not text.strip():
-        text = "No readable text found in the document."
+        elif ext == ".pptx":
+            prs = Presentation(file_path)
+            slides = []
+            for slide in prs.slides:
+                for shape in slide.shapes:
+                    if hasattr(shape, "text"):
+                        slides.append(shape.text)
+            text = "\n".join(slides)
+
+        elif ext in [".xlsx", ".csv"]:
+            df = pd.read_excel(file_path) if ext == ".xlsx" else pd.read_csv(file_path)
+            text = df.to_string(index=False)
+
+        elif ext == ".html":
+            with open(file_path, "r", encoding="utf-8") as f:
+                soup = BeautifulSoup(f.read(), "html.parser")
+            text = soup.get_text(separator="\n")
+
+        elif ext == ".json":
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            text = json.dumps(data, indent=2)
+
+        else:
+            text = "Unsupported file type"
+
+    except Exception as e:
+        text = f"Error extracting text: {str(e)}"
 
     return text
 

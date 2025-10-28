@@ -1,12 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Register</h2>
-<form method="POST" action="{{ url_for('main.register') }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-    <input name="username" placeholder="Username" required>
-    <input name="email" type="email" placeholder="Email" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button type="submit">Register</button>
-</form>
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card glow-primary">
+                <div class="card-header text-center">
+                    <i class="fas fa-user-plus fa-2x text-primary mb-3"></i>
+                    <h3 class="mb-0">Create Account! </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('main.register') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input name="username" class="form-control" id="username" placeholder="Choose a username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input name="email" type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input name="password" type="password" class="form-control" id="password" placeholder="Create a password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-rocket me-2"></i>Get Started
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p class="mb-0">Already have an account? <a href="{{ url_for('main.login') }}" class="text-primary">Sign in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

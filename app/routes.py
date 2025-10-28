@@ -32,7 +32,9 @@ def home():
 # -----------------------
 # Helpers
 # -----------------------
-ALLOWED_EXTENSIONS = {".txt", ".md", ".pdf"}
+ALLOWED_EXTENSIONS = {
+    ".txt", ".md", ".pdf", ".docx", ".pptx", ".xlsx", ".csv", ".html", ".json"
+}
 #ALLOWED_MIME_TYPES = {"text/plain", "text/markdown", "application/pdf"}
 
 def allowed_file(filename):
@@ -328,7 +330,7 @@ def upload():
             return jsonify(success=False, error=msg) if is_ajax else (flash(msg, "danger"), redirect(url_for("main.dashboard")))[1]
 
         if not allowed_file(f.filename):
-            msg = "Invalid file type. Only .txt, .md and .pdf allowed."
+            msg = "Invalid file type. Only .txt, .md, .pdf, .docx, .pptx, .xlsx, .csv, .html, .json allowed."
             return jsonify(success=False, error=msg) if is_ajax else (flash(msg, "danger"), redirect(url_for("main.dashboard")))[1]
 
         """if not allowed_mime_type(f):
