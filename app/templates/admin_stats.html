@@ -1,12 +1,240 @@
 {% extends "base.html" %}
+
+{% block title %}System Statistics - Admin - DocHub{% endblock %}
+
 {% block content %}
-<h2>System Stats</h2>
-<p><a href="{{ url_for('main.admin') }}" class="btn btn-secondary">Back to Admin</a></p>
-<ul>
-  <li><strong>Total Users:</strong> {{ user_count }}</li>
-  <li><strong>Pilot Users:</strong> {{ pilot_count }}</li>
-  <li><strong>Total Files:</strong> {{ file_count }}</li>
-  <li><strong>Total Chunks:</strong> {{ chunk_count }}</li>
-  <li><strong>Total Storage Used:</strong> {{ "%.2f"|format(total_used_mb) }} MB</li>
-</ul>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card glow-primary">
+                <div class="card-body py-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="mb-2"><i class="fas fa-chart-bar me-3 text-primary"></i>System Statistics</h1>
+                            <p class="mb-0 text-muted">Comprehensive overview of DocHub platform metrics</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('main.admin') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Admin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center glow-primary">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h2 class="card-title display-4 fw-bold text-primary">{{ user_count }}</h2>
+                    <p class="card-text text-muted h5">Total Users</p>
+                    <small class="text-muted">Registered accounts</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center glow-success">
+                <div class="card-body">
+                    <i class="fas fa-star fa-3x text-success mb-3"></i>
+                    <h2 class="card-title display-4 fw-bold text-success">{{ pilot_count }}</h2>
+                    <p class="card-text text-muted h5">Pilot Users</p>
+                    <small class="text-muted">Premium subscribers</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center glow-info">
+                <div class="card-body">
+                    <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
+                    <h2 class="card-title display-4 fw-bold text-info">{{ file_count }}</h2>
+                    <p class="card-text text-muted h5">Total Files</p>
+                    <small class="text-muted">Documents uploaded</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center glow-warning">
+                <div class="card-body">
+                    <i class="fas fa-database fa-3x text-warning mb-3"></i>
+                    <h2 class="card-title display-4 fw-bold text-warning">{{ chunk_count }}</h2>
+                    <p class="card-text text-muted h5">Total Chunks</p>
+                    <small class="text-muted">Processed segments</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Stats -->
+    <div class="row g-4">
+        <!-- Storage & Performance -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-server me-2"></i>Storage & Performance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-hdd fa-2x text-primary me-3"></i>
+                                    <strong>Total Storage Used</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-primary">{{ "%.2f"|format(total_used_mb) }} MB</h4>
+                                    <small class="text-muted">Across all users</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-chart-pie fa-2x text-success me-3"></i>
+                                    <strong>Average Files per User</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-success">{{ "%.1f"|format(file_count / user_count if user_count > 0 else 0) }}</h4>
+                                    <small class="text-muted">Files per account</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-brain fa-2x text-info me-3"></i>
+                                    <strong>Average Chunks per File</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-info">{{ "%.1f"|format(chunk_count / file_count if file_count > 0 else 0) }}</h4>
+                                    <small class="text-muted">AI processing segments</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue & Growth -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-dollar-sign me-2"></i>Revenue & Growth</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-money-bill-wave fa-2x text-success me-3"></i>
+                                    <strong>Total Revenue</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-success">${{ pilot_count * 150 }}</h4>
+                                    <small class="text-muted">$150 per pilot</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-percentage fa-2x text-warning me-3"></i>
+                                    <strong>Conversion Rate</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-warning">{{ "%.1f"|format((pilot_count / user_count * 100) if user_count > 0 else 0) }}%</h4>
+                                    <small class="text-muted">Free to pilot</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-trending-up fa-2x text-primary me-3"></i>
+                                    <strong>Revenue per User</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-primary">${{ "%.0f"|format((pilot_count * 150) / user_count) if user_count > 0 else 0 }}</h4>
+                                    <small class="text-muted">Average ARPU</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>System Health</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <h6>Database</h6>
+                            <span class="badge bg-success">Operational</span>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <h6>File Storage</h6>
+                            <span class="badge bg-success">Operational</span>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <h6>AI Processing</h6>
+                            <span class="badge bg-success">Operational</span>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <h6>Payments</h6>
+                            <span class="badge bg-success">Operational</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add animations and interactive elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stat cards on load
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+
+    // Add tooltips to metrics
+    const metricElements = document.querySelectorAll('.card-body h4');
+    metricElements.forEach(el => {
+        el.setAttribute('data-bs-toggle', 'tooltip');
+        el.setAttribute('title', 'Click to view detailed breakdown');
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}

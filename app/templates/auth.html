@@ -1,49 +1,163 @@
 {% extends "base.html" %}
 
+{% block title %}Authentication - DocHub{% endblock %}
+
 {% block content %}
-<h2>Authentication</h2>
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card glow-primary">
+                <div class="card-header text-center bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-key me-2"></i>Authentication</h3>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs nav-justified" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {% if active_tab == 'login' or not active_tab %}active{% endif %}"
+                                    id="login-tab" data-bs-toggle="tab" data-bs-target="#login"
+                                    type="button" role="tab" aria-controls="login" aria-selected="true">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {% if active_tab == 'register' %}active{% endif %}"
+                                    id="register-tab" data-bs-toggle="tab" data-bs-target="#register"
+                                    type="button" role="tab" aria-controls="register" aria-selected="false">
+                                <i class="fas fa-user-plus me-2"></i>Sign Up
+                            </button>
+                        </li>
+                    </ul>
 
-<!-- Tabs for switching forms -->
-<div>
-    <button onclick="showForm('login')">Login</button>
-    <button onclick="showForm('register')">Register</button>
+                    <!-- Tab Content -->
+                    <div class="tab-content p-4" id="authTabContent">
+                        <!-- Login Tab -->
+                        <div class="tab-pane fade {% if active_tab == 'login' or not active_tab %}show active{% endif %}"
+                             id="login" role="tabpanel" aria-labelledby="login-tab">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-sign-in-alt fa-3x text-primary mb-3"></i>
+                                <h4>Welcome Back!</h4>
+                                <p class="text-muted">Sign in to your DocHub account</p>
+                            </div>
+
+                            <form method="POST" action="{{ url_for('main.login') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <div class="mb-3">
+                                    <label for="login-email" class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input name="email" type="email" class="form-control" id="login-email"
+                                               placeholder="Enter your email" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="login-password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input name="password" type="password" class="form-control" id="login-password"
+                                               placeholder="Enter your password" required>
+                                    </div>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    Don't have an account?
+                                    <a href="#" onclick="switchToRegister()" class="text-primary">Sign up here</a>
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Register Tab -->
+                        <div class="tab-pane fade {% if active_tab == 'register' %}show active{% endif %}"
+                             id="register" role="tabpanel" aria-labelledby="register-tab">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                                <h4>Join DocHub</h4>
+                                <p class="text-muted">Create your account to get started</p>
+                            </div>
+
+                            <form method="POST" action="{{ url_for('main.register') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <div class="mb-3">
+                                    <label for="register-username" class="form-label">Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input name="username" class="form-control" id="register-username"
+                                               placeholder="Choose a username" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-email" class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input name="email" type="email" class="form-control" id="register-email"
+                                               placeholder="Enter your email" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input name="password" type="password" class="form-control" id="register-password"
+                                               placeholder="Create a password" required>
+                                    </div>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-rocket me-2"></i>Get Started
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    Already have an account?
+                                    <a href="#" onclick="switchToLogin()" class="text-primary">Sign in here</a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
 
-<!-- Login Form -->
-<div id="login-form">
-    <form method="POST" action="{{ url_for('main.login') }}">
-        <input name="email" type="email" placeholder="Email" required>
-        <input name="password" type="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
-</div>
-
-<!-- Register Form -->
-<div id="register-form" style="display:none;">
-    <form method="POST" action="{{ url_for('main.register') }}">
-        <input name="username" placeholder="Username" required>
-        <input name="email" type="email" placeholder="Email" required>
-        <input name="password" type="password" placeholder="Password" required>
-        <button type="submit">Register</button>
-    </form>
-</div>
-
-
+{% block scripts %}
 <script>
-function showForm(form) {
-    if(form === 'login') {
-        document.getElementById('login-form').style.display = 'block';
-        document.getElementById('register-form').style.display = 'none';
-    } else {
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('register-form').style.display = 'block';
-    }
+// Function to switch to register tab
+function switchToRegister() {
+    const registerTab = new bootstrap.Tab(document.getElementById('register-tab'));
+    registerTab.show();
 }
-</script>
 
-<script>
-let activeTab = "{{ active_tab }}";
-showForm(activeTab);
-</script>
+// Function to switch to login tab
+function switchToLogin() {
+    const loginTab = new bootstrap.Tab(document.getElementById('login-tab'));
+    loginTab.show();
+}
 
+// Set active tab based on server variable
+document.addEventListener('DOMContentLoaded', function() {
+    const activeTab = "{{ active_tab }}";
+    if (activeTab === 'register') {
+        switchToRegister();
+    } else {
+        switchToLogin();
+    }
+
+    // Add smooth transitions
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    tabPanes.forEach(pane => {
+        pane.style.transition = 'all 0.3s ease';
+    });
+});
+</script>
 {% endblock %}

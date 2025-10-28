@@ -1,35 +1,69 @@
 {% extends "base.html" %}
 
+{% block title %}Payment Successful - DocHub{% endblock %}
+
 {% block content %}
-<div class="container">
+<div class="container-fluid py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body text-center p-5">
-                    <div class="mb-4">
-                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+        <div class="col-lg-8">
+            <div class="card glow-success text-center">
+                <div class="card-body py-5">
+                    <div class="success-icon mb-4">
+                        <i class="fas fa-check-circle fa-5x text-success"></i>
                     </div>
-                    <h1 class="card-title text-success mb-4">Payment Successful!</h1>
-                    <p class="card-text lead mb-4">
-                        Thank you for upgrading to <strong>DocHub Pilot</strong>!
-                        Your payment of $150 has been processed successfully.
+                    <h1 class="display-4 fw-bold text-success mb-4">Payment Successful!</h1>
+                    <p class="lead mb-4 text-muted">
+                        Thank you for upgrading to <strong class="text-primary">DocHub Pilot</strong>!
+                        Your payment of <span class="badge bg-success fs-5">$150</span> has been processed successfully.
                     </p>
-                    <div class="alert alert-success" role="alert">
-                        <h5 class="alert-heading">🎉 Welcome to DocHub Pilot!</h5>
-                        <p class="mb-0">
-                            You now have access to unlimited document processing, advanced AI features,
-                            and priority support. Start exploring your enhanced capabilities!
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <i class="fas fa-star fa-2x text-warning mb-3"></i>
+                                    <h5 class="card-title">Premium Access</h5>
+                                    <p class="card-text">Unlimited document processing and advanced AI features</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <i class="fas fa-headset fa-2x text-info mb-3"></i>
+                                    <h5 class="card-title">Priority Support</h5>
+                                    <p class="card-text">Get help faster with our dedicated support team</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success border-0 mb-4">
+                        <i class="fas fa-rocket me-2"></i>
+                        <strong>🎉 Welcome to DocHub Pilot!</strong>
+                        <p class="mb-0 mt-2">
+                            You now have lifetime access to all premium features. Start exploring your enhanced capabilities right away!
                         </p>
                     </div>
-                    <div class="mt-4">
+
+                    <div class="d-flex justify-content-center gap-3 mb-4">
                         <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{{ url_for('main.pricing') }}" class="btn btn-outline-success btn-lg">
+                            <i class="fas fa-info-circle me-2"></i>View Benefits
                         </a>
                     </div>
-                    <div class="mt-3">
+
+                    <div class="border-top pt-3">
                         <small class="text-muted">
-                            Payment ID: {{ session_id or 'N/A' }}<br>
-                            Questions? Contact our support team.
+                            <i class="fas fa-receipt me-1"></i>
+                            Payment ID: <code>{{ session_id or 'N/A' }}</code>
+                            <br>
+                            <i class="fas fa-envelope me-1"></i>
+                            A confirmation email has been sent to your registered email address.
+                            <br>
+                            Questions? <a href="mailto:support@dochub.com" class="text-primary">Contact our support team</a>.
                         </small>
                     </div>
                 </div>
@@ -37,4 +71,52 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add celebration animation
+document.addEventListener('DOMContentLoaded', function() {
+    const successIcon = document.querySelector('.success-icon');
+    successIcon.style.animation = 'bounceIn 1s ease-out';
+
+    // Add confetti effect (simple CSS animation)
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #58a6ff;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Create confetti
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = ['#58a6ff', '#238636', '#ffd33d', '#f85149'][Math.floor(Math.random() * 4)];
+            document.body.appendChild(confetti);
+
+            setTimeout(() => confetti.remove(), 3000);
+        }, i * 50);
+    }
+});
+</script>
 {% endblock %}

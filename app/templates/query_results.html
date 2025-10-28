@@ -1,42 +1,165 @@
 {% extends "base.html" %}
 
+{% block title %}Query Results - DocHub{% endblock %}
+
 {% block content %}
-<h2>Query Results</h2>
-
-<div style="margin-bottom: 20px;">
-    <h3>Your Question:</h3>
-    <p style="font-style: italic; background-color: #f5f5f5; padding: 10px; border-radius: 5px;">
-        "{{ query }}"
-    </p>
-</div>
-
-<div style="margin-bottom: 30px;">
-    <h3>AI Answer:</h3>
-    <div style="background-color: #e8f5e8; padding: 15px; border-radius: 5px; border-left: 4px solid #4CAF50;">
-        {{ answer }}
-    </div>
-</div>
-
-<div style="margin-bottom: 30px;">
-    <h3>Supporting Documents:</h3>
-    {% for chunk in supporting_chunks %}
-    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h4>From: {{ chunk.chunk.file.filename }}</h4>
-        <p style="font-size: 0.9em; color: #666;">
-            Similarity score: {{ "%.3f"|format(chunk.distance) }}
-        </p>
-        <div style="background-color: #f9f9f9; padding: 10px; border-radius: 3px; margin-top: 10px;">
-            {{ chunk.chunk.text }}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card glow-primary">
+                <div class="card-body py-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="mb-2"><i class="fas fa-search me-3 text-primary"></i>Query Results</h1>
+                            <p class="mb-0 text-muted">AI-powered insights from your documents</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus me-2"></i>Ask Another Question
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
-</div>
 
-<div style="margin-top: 30px;">
-    <a href="{{ url_for('main.dashboard') }}" style="text-decoration: none;">
-        <button style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Ask Another Question
-        </button>
-    </a>
+    <div class="row g-4">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Your Question -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i>Your Question</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info border-0" role="alert">
+                        <i class="fas fa-quote-left text-primary me-2"></i>
+                        <strong>{{ query }}</strong>
+                        <i class="fas fa-quote-right text-primary ms-2"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Answer -->
+            <div class="card mb-4 glow-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-brain me-2"></i>AI Answer</h5>
+                </div>
+                <div class="card-body">
+                    <div class="answer-content p-3 rounded" style="background-color: rgba(35, 134, 54, 0.1); border-left: 4px solid #28a745;">
+                        <i class="fas fa-lightbulb text-success me-2"></i>
+                        {{ answer }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Supporting Documents -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Supporting Documents</h5>
+                    <small class="text-muted">({{ supporting_chunks|length }} sources)</small>
+                </div>
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                    {% for chunk in supporting_chunks %}
+                        <div class="document-chunk mb-3 p-3 rounded border" style="background-color: #161b22; border-color: #30363d;">
+                            <div class="d-flex align-items-start mb-2">
+                                <i class="fas fa-file text-primary me-2 mt-1"></i>
+                                <div class="flex-grow-1">
+                                    <strong class="text-primary">{{ chunk.chunk.file.filename }}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-chart-line me-1"></i>
+                                        Similarity: {{ "%.3f"|format(chunk.distance) }}
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="chunk-text p-2 rounded" style="background-color: #21262d; font-size: 0.9em; max-height: 150px; overflow-y: auto;">
+                                {{ chunk.chunk.text }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add smooth scrolling and animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate cards on load
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+
+    // Add tooltips to similarity scores
+    const similarityElements = document.querySelectorAll('.text-muted');
+    similarityElements.forEach(el => {
+        if (el.textContent.includes('Similarity:')) {
+            el.setAttribute('data-bs-toggle', 'tooltip');
+            el.setAttribute('title', 'Higher similarity means more relevant content');
+        }
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+
+<style>
+.answer-content {
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+.document-chunk {
+    transition: all 0.3s ease;
+}
+
+.document-chunk:hover {
+    background-color: #21262d !important;
+    border-color: #58a6ff !important;
+    transform: translateX(5px);
+}
+
+.chunk-text {
+    color: #c9d1d9;
+    line-height: 1.5;
+}
+
+/* Custom scrollbar for chunks */
+.card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.card-body::-webkit-scrollbar-track {
+    background: #0d1117;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 3px;
+}
+
+.card-body::-webkit-scrollbar-thumb:hover {
+    background: #58a6ff;
+}
+</style>
 {% endblock %}

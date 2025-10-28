@@ -1,36 +1,66 @@
 {% extends "base.html" %}
 
+{% block title %}Payment Cancelled - DocHub{% endblock %}
+
 {% block content %}
-<div class="container">
+<div class="container-fluid py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body text-center p-5">
-                    <div class="mb-4">
-                        <i class="fas fa-times-circle text-warning" style="font-size: 4rem;"></i>
+        <div class="col-lg-8">
+            <div class="card glow-primary text-center">
+                <div class="card-body py-5">
+                    <div class="cancel-icon mb-4">
+                        <i class="fas fa-times-circle fa-5x text-warning"></i>
                     </div>
-                    <h1 class="card-title text-warning mb-4">Payment Cancelled</h1>
-                    <p class="card-text lead mb-4">
+                    <h1 class="display-4 fw-bold text-warning mb-4">Payment Cancelled</h1>
+                    <p class="lead mb-4 text-muted">
                         Your payment was cancelled. No charges were made to your account.
                     </p>
-                    <div class="alert alert-info" role="alert">
-                        <h5 class="alert-heading">💡 No worries!</h5>
-                        <p class="mb-0">
-                            You can try upgrading to DocHub Pilot again anytime.
-                            All your current features remain available.
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <i class="fas fa-shield-alt fa-2x text-info mb-3"></i>
+                                    <h5 class="card-title">Secure & Safe</h5>
+                                    <p class="card-text">No charges were processed. Your payment information is secure.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <i class="fas fa-user-check fa-2x text-success mb-3"></i>
+                                    <h5 class="card-title">Account Intact</h5>
+                                    <p class="card-text">All your current features and data remain unchanged.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info border-0 mb-4">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>💡 No worries!</strong>
+                        <p class="mb-0 mt-2">
+                            You can try upgrading to DocHub Pilot again anytime. Take your time to explore the free features first!
                         </p>
                     </div>
-                    <div class="mt-4">
+
+                    <div class="d-flex justify-content-center gap-3 mb-4">
                         <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                         </a>
-                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-success btn-lg ml-2">
-                            <i class="fas fa-credit-card"></i> Try Again
+                        <a href="{{ url_for('main.pricing') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-credit-card me-2"></i>Try Again
                         </a>
                     </div>
-                    <div class="mt-3">
+
+                    <div class="border-top pt-3">
                         <small class="text-muted">
-                            Need help? Our support team is here to assist you.
+                            <i class="fas fa-question-circle me-1"></i>
+                            Have questions about DocHub Pilot? <a href="mailto:support@dochub.com" class="text-primary">Contact our support team</a>.
+                            <br>
+                            <i class="fas fa-info-circle me-1"></i>
+                            Your free plan includes basic document processing and AI queries.
                         </small>
                     </div>
                 </div>
@@ -38,4 +68,30 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add gentle animation to the cancel icon
+document.addEventListener('DOMContentLoaded', function() {
+    const cancelIcon = document.querySelector('.cancel-icon');
+    cancelIcon.style.animation = 'fadeInDown 1s ease-out';
+
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
 {% endblock %}

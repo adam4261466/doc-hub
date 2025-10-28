@@ -1,16 +1,253 @@
 {% extends "base.html" %}
+
+{% block title %}User Statistics - {{ user.username }} - Admin - DocHub{% endblock %}
+
 {% block content %}
-<h2>User Stats: {{ user.username }}</h2>
-<p><a href="{{ url_for('main.admin') }}" class="btn btn-secondary">Back to Admin</a></p>
-<ul>
-  <li><strong>ID:</strong> {{ user.id }}</li>
-  <li><strong>Username:</strong> {{ user.username }}</li>
-  <li><strong>Email:</strong> {{ user.email }}</li>
-  <li><strong>Created At:</strong> {{ user.created_at.strftime("%Y-%m-%d %H:%M") }}</li>
-  <li><strong>Pilot Status:</strong> {{ 'Yes' if user.is_pilot else 'No' }}</li>
-  <li><strong>Pilot Purchased At:</strong> {{ user.pilot_purchased_at.strftime("%Y-%m-%d %H:%M") if user.pilot_purchased_at else "N/A" }}</li>
-  <li><strong>Files Count:</strong> {{ file_count }}</li>
-  <li><strong>Storage Used:</strong> {{ "%.2f"|format(used_mb) }} MB</li>
-  <li><strong>Storage Available:</strong> {{ "%.2f"|format(available_mb) }} MB</li>
-</ul>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card glow-primary">
+                <div class="card-body py-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="mb-2"><i class="fas fa-user me-3 text-primary"></i>User Statistics: {{ user.username }}</h1>
+                            <p class="mb-0 text-muted">Detailed account information and usage metrics</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('main.admin') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Admin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block">User ID</small>
+                                <strong class="h5 text-primary">#{{ user.id }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block">Username</small>
+                                <strong class="h5">{{ user.username }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block">Email</small>
+                                <strong class="h6">{{ user.email }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block">Account Created</small>
+                                <strong class="h6">{{ user.created_at.strftime("%b %d, %Y") }}</strong>
+                                <br><small class="text-muted">{{ user.created_at.strftime("%H:%M") }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block">Pilot Status</small>
+                                {% if user.is_pilot %}
+                                    <span class="badge bg-success fs-6 px-3 py-2">
+                                        <i class="fas fa-star me-1"></i>Premium Member
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary fs-6 px-3 py-2">
+                                        <i class="fas fa-user me-1"></i>Free Plan
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block">Pilot Purchase Date</small>
+                                {% if user.pilot_purchased_at %}
+                                    <strong class="h6">{{ user.pilot_purchased_at.strftime("%b %d, %Y") }}</strong>
+                                    <br><small class="text-muted">{{ user.pilot_purchased_at.strftime("%H:%M") }}</small>
+                                {% else %}
+                                    <span class="text-muted">Not purchased</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats Sidebar -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Usage Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="progress-circle" style="width: 120px; height: 120px; margin: 0 auto; position: relative;">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="50" stroke="#e9ecef" stroke-width="10" fill="none"/>
+                                <circle cx="60" cy="60" r="50" stroke="#28a745" stroke-width="10" fill="none"
+                                        stroke-dasharray="{{ (used_mb / (used_mb + available_mb)) * 314 if (used_mb + available_mb) > 0 else 0 }}, 314"
+                                        transform="rotate(-90 60 60)"/>
+                            </svg>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <div class="h4 mb-0 text-success">{{ "%.0f"|format((used_mb / (used_mb + available_mb)) * 100 if (used_mb + available_mb) > 0 else 0) }}%</div>
+                                <small class="text-muted">Used</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-center g-3">
+                        <div class="col-6">
+                            <i class="fas fa-file-alt fa-2x text-info mb-2"></i>
+                            <h5 class="mb-0">{{ file_count }}</h5>
+                            <small class="text-muted">Files</small>
+                        </div>
+                        <div class="col-6">
+                            <i class="fas fa-hdd fa-2x text-warning mb-2"></i>
+                            <h5 class="mb-0">{{ "%.1f"|format(used_mb) }}MB</h5>
+                            <small class="text-muted">Used</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Storage Details -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-database me-2"></i>Storage Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-upload fa-lg text-success me-3"></i>
+                                    <strong>Storage Used</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-success">{{ "%.2f"|format(used_mb) }} MB</h4>
+                                    <small class="text-muted">Files & processing</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-expand fa-lg text-primary me-3"></i>
+                                    <strong>Storage Available</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-primary">{{ "%.2f"|format(available_mb) }} MB</h4>
+                                    <small class="text-muted">Remaining capacity</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                <div>
+                                    <i class="fas fa-percentage fa-lg text-warning me-3"></i>
+                                    <strong>Usage Percentage</strong>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-warning">{{ "%.1f"|format((used_mb / (used_mb + available_mb)) * 100 if (used_mb + available_mb) > 0 else 0) }}%</h4>
+                                    <small class="text-muted">Of total allocation</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Actions -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Account Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <form action="{{ url_for('main.toggle_pilot', user_id=user.id) }}" method="POST" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-secondary btn-lg w-100">
+                                <i class="fas fa-toggle-{{ 'off' if user.is_pilot else 'on' }} me-2"></i>
+                                {{ 'Remove Pilot Access' if user.is_pilot else 'Grant Pilot Access' }}
+                            </button>
+                        </form>
+
+                        <form action="{{ url_for('main.impersonate', user_id=user.id) }}" method="POST" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-primary btn-lg w-100">
+                                <i class="fas fa-user-secret me-2"></i>Impersonate User
+                            </button>
+                        </form>
+
+                        <form action="{{ url_for('main.reset_index', user_id=user.id) }}" method="POST" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-warning btn-lg w-100">
+                                <i class="fas fa-sync me-2"></i>Reset Search Index
+                            </button>
+                        </form>
+
+                        <form action="{{ url_for('main.delete_user', user_id=user.id) }}" method="POST" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-danger btn-lg w-100"
+                                    onclick="return confirm('Are you absolutely sure you want to delete this user and all their data? This action cannot be undone.')">
+                                <i class="fas fa-trash me-2"></i>Delete User Account
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add animations and interactive elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate cards on load
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+
+    // Enhanced confirmation for delete
+    document.querySelectorAll('button[onclick*="confirm"]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const username = document.querySelector('h1').textContent.split(': ')[1];
+            const confirmed = confirm(`Are you absolutely sure you want to delete user "${username}" and all their data?\n\nThis action cannot be undone!`);
+            if (!confirmed) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
