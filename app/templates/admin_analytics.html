@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Signup Analytics - Admin{% endblock %}
+{% block content %}
+<div class="py-4 px-4">
+    <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h1 class="fw-bold" style="font-size: 1.75rem;"><i class="fas fa-chart-pie me-2" style="color: var(--accent);"></i>Signup Analytics</h1>
+        <a href="{{ url_for('main.admin') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i> Back to Admin</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <div class="text-muted" style="font-size: 0.8rem;">Total Users</div>
+                <div class="fw-bold" style="font-size: 1.75rem;">{{ total_users }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <div class="text-muted" style="font-size: 0.8rem;">Pro Subscribers</div>
+                <div class="fw-bold" style="font-size: 1.75rem;">{{ pro_users }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <div class="text-muted" style="font-size: 0.8rem;">Overall Conversion</div>
+                <div class="fw-bold" style="font-size: 1.75rem;">{{ ((pro_users / total_users * 100) | round(1)) if total_users else 0 }}%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-0" style="overflow: hidden;">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr style="background: rgba(255,255,255,0.04);">
+                        <th>Channel (utm_source)</th>
+                        <th>Signups</th>
+                        <th>% of Total</th>
+                        <th>Pro Upgrades</th>
+                        <th>Conversion Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in conversion_by_source %}
+                    <tr>
+                        <td class="fw-semibold">{{ row.source }}</td>
+                        <td>{{ row.signups }}</td>
+                        <td>{{ ((row.signups / total_users * 100) | round(1)) if total_users else 0 }}%</td>
+                        <td>{{ row.pro }}</td>
+                        <td>
+                            <span class="badge {{ 'bg-success' if row.conversion_pct > 0 else 'bg-secondary' }}">
+                                {{ row.conversion_pct }}%
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-muted text-center py-4">No signups yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p class="text-muted mt-3" style="font-size: 0.8rem;">
+        Tip: tag every link you share with <code>?utm_source=CHANNEL</code> (e.g. <code>?utm_source=reddit</code>) so signups land in the right row here.
+    </p>
+</div>
+{% endblock %}
