@@ -6,7 +6,7 @@ import hmac
 import hashlib
 import io
 from datetime import datetime, timezone, timedelta
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify, send_file, Response
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify, send_file, Response, session
 from werkzeug.utils import secure_filename, safe_join
 from .models import User, File, Chunk, UploadUsage, Folder, Tag, file_tags, BillingEvent
 from . import db, limiter
@@ -114,6 +114,9 @@ from app import mail, csrf
 
 @main.route("/")
 def home():
+    utm_source = request.args.get("utm_source")
+    if utm_source:
+        session["signup_source"] = utm_source
     return render_template("index.html", user=current_user)
 
 
@@ -131,7 +134,7 @@ def register():
             flash("Email already exists.", "danger")
             return redirect(url_for("main.register"))
 
-        new_user = User(username=username, email=email)
+        new_user = User(username=username, email=email, signup_source=session.get("signup_source", "direct"))
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
@@ -1201,6 +1204,49 @@ def admin():
         return redirect(url_for("main.dashboard"))
     users = User.query.filter_by(is_pilot=True).all()
     return render_template("admin_pilots.html", users=users)
+
+
+@main.route("/admin/analytics")
+@login_required
+def admin_analytics():
+    if not current_user.is_admin:
+        flash("Access denied.", "danger")
+        return redirect(url_for("main.dashboard"))
+
+    from sqlalchemy import func
+
+    source_counts = (
+        db.session.query(
+            func.coalesce(User.signup_source, "direct").label("source"),
+            func.count(User.id).label("count"),
+        )
+        .group_by("source")
+        .order_by(func.count(User.id).desc())
+        .all()
+    )
+
+    total_users = User.query.count()
+    pro_users = User.query.filter(User.subscription_status == "active").count()
+
+    conversion_by_source = []
+    for source, count in source_counts:
+        pro_count = User.query.filter(
+            func.coalesce(User.signup_source, "direct") == source,
+            User.subscription_status == "active",
+        ).count()
+        conversion_by_source.append({
+            "source": source,
+            "signups": count,
+            "pro": pro_count,
+            "conversion_pct": round((pro_count / count * 100), 1) if count else 0,
+        })
+
+    return render_template(
+        "admin_analytics.html",
+        conversion_by_source=conversion_by_source,
+        total_users=total_users,
+        pro_users=pro_users,
+    )
 
 
 @main.route("/reset_index/<int:user_id>", methods=["POST"])
