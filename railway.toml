@@ -13,7 +13,7 @@
 
 [[services]]
   name = "worker"
-  startCommand = "celery -A app.celery_worker.celery worker --loglevel=info --concurrency=2 -P prefork"
+  startCommand = "celery -A app.celery_worker.celery worker --loglevel=info --concurrency=1 -P prefork"
   restartPolicyType = "on-failure"
 
   [[services.volumes]]
