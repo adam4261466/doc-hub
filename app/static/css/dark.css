@@ -61,6 +61,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Push footer to bottom on short pages */
+.page-content {
+  flex: 1 0 auto;
+}
+
+body > footer {
+  flex-shrink: 0;
 }
 
 /* ============================================
